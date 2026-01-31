@@ -11,7 +11,7 @@ public class OffreDAO {
     String user = "root"; 
     String password = ""; 
 
-    public List<Offre> getAllOffres() {
+    public List<Offre> getAllOffres() {   // getalloffres  يسمح باتصال بعروض  من قاعدة بيانات 
         List<Offre> offres = new ArrayList<>();
         try {
             // 2. تحميل الدرايفر

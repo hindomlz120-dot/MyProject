@@ -4,7 +4,7 @@ public class Offre {
     private int id;
     private String titre;
     private String entreprise;
-    // 1. زدنا المتغير الجديد هنا
+ //                                          افتح طريق بين جافا وقاعدة بيانات                                          جلب بيانات  من قاعدة                 
     private String description; 
 
     public Offre() {}

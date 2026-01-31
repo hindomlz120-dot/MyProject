@@ -29,12 +29,12 @@ public class PostulerServlet extends HttpServlet {
             
             // إضافة الترشيح بوضعية "En attente" (في الانتظار)
             String sql = "INSERT INTO candidatures (id_etudiant, id_offre, statut) VALUES (?, ?, ?)";
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql);//لحماية قاعدة بيانات من اختراق 
             ps.setString(1, userEmail); // هنا استعملنا الإيميل كمعرف للطالب
             ps.setString(2, idOffre);
             ps.setString(3, "En attente");
             
-            ps.executeUpdate();
+            ps.executeUpdate(); //ادخال بيانات لاشخاص لي سجلو 
             ps.close();
             conn.close();
             

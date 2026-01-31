@@ -1,31 +1,44 @@
-package dao;
-import java.sql.*;
+
+package dao; // السطر الأول لضمان توافق الملف مع مجلد dao في Eclipse
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class UserDAO {
-    String url = "jdbc:mysql://localhost:3306/stages_db";
-    String user = "root";
-    String password = "";
+    private String url = "jdbc:mysql://localhost:3306/stages_db";
+    private String user = "root";
+    private String password = "";
 
-    public boolean validate(String email, String pass) {
-        boolean status = false;
+    // الكود الموحد الذي تمنحه الإدارة للتلاميذ (تقدري تغيريه كما تحبين)
+    private String STUDENT_PASSWORD_MASTER = "1234";
+
+    public String getUserRole(String email, String pass) {
+        String role = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection(url, user, password);
             
-            // التصحيح هنا: نتحقق من كلمة السر فقط لكي نسمح لأي إيميل بالدخول
-            // التعديل: حذف "email=?" من الاستعلام
-            String sql = "SELECT * FROM utilisateurs WHERE password=?"; 
-            PreparedStatement ps = conn.prepareStatement(sql);
+            // أولاً: نتحقق هل المستخدم هو الإدارة (موجود في قاعدة البيانات)
+            String sqlAdmin = "SELECT role FROM utilisateurs WHERE email=? AND password=? AND role='admin'"; 
+            PreparedStatement psAdmin = conn.prepareStatement(sqlAdmin);
+            psAdmin.setString(1, email);
+            psAdmin.setString(2, pass); 
             
-            // نمرر كلمة السر فقط (الموحدة التي تملكها الإدارة)
-            ps.setString(1, pass); 
-            
-            ResultSet rs = ps.executeQuery();
-            status = rs.next(); // إذا كانت كلمة السر موجودة في الجدول، يرجع true
+            ResultSet rsAdmin = psAdmin.executeQuery();
+            if (rsAdmin.next()) {
+                role = "admin"; // إذا وجدناه في القاعدة، فهو أدمن
+            } else {
+                // ثانياً: إذا لم يكن أدمن، نتحقق فقط من كلمة السر الموحدة للتلاميذ
+                if (pass.equals(STUDENT_PASSWORD_MASTER)) {
+                    role = "etudiant"; // نعتبره تلميذاً ونسمح له بالدخول بأي إيميل
+                }
+            }
             conn.close();
         } catch (Exception e) { 
             e.printStackTrace(); 
         }
-        return status;
+        return role; // إذا بقي null، سيعود لصفحة الـ login
     }
 }

@@ -56,8 +56,8 @@
                             // جلب البيانات من الـ Request
                             List<models.Offre> offres = (List<models.Offre>) request.getAttribute("listOffres");
                             
-                            if (offres != null && !offres.isEmpty()) {
-                                for (models.Offre o : offres) { 
+                            if (offres != null && !offres.isEmpty()) {  // باه مايجيش خطا ادا كانت قائمة فارغة 
+                                for (models.Offre o : offres) { // باه كل عنصر في قلائمة تعطيه سطر خاص بيه   
                         %>
                         <tr>
                             <td class="text-secondary fw-bold"><%= o.getId() %></td>
